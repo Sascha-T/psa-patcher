@@ -76,7 +76,7 @@ function processFile(fileName) {
    let output = "";
    for(let line of lines) output += line + "\r\n";
 
-   fs.writeFileSync(root + "\\" + fileName + ".out", output, "utf8")
+   fs.writeFileSync(root + "\\" + fileName, output, "utf8")
    console.log(`Patched ${patches} internet check(s) in ${fileName}`)
 
    processed.push(fileName);
