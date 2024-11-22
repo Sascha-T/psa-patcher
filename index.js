@@ -1,21 +1,22 @@
 const { globSync } = require("glob");
 const fs = require("fs")
 
+const root = "C:\\AWRoot\\dtrd\\tree"
 let processed = []
 
 function processFile(fileName) {
-    if(fs.existsSync(fileName + ".bak")) {
+    if(fs.existsSync(root + "\\" + fileName + ".bak")) {
         processed.push(fileName);
         console.log(`${fileName} already processed.`)
         return;
     }
-    let data = fs.readFileSync(fileName, "utf8")
+    let data = fs.readFileSync(root + "\\" + fileName, "utf8")
     if(!data.includes("TestInternet")) {
         console.log(`${fileName} requires no processing.`)
         return;
     }
 
-    fs.copyFileSync(fileName, fileName + ".bak")
+    fs.copyFileSync(root + "\\" + fileName, root + "\\" + fileName + ".bak")
 
     data = data.replace(/chk="\d*"\x20/g, "");
 
@@ -75,14 +76,14 @@ function processFile(fileName) {
    let output = "";
    for(let line of lines) output += line + "\r\n";
 
-   fs.writeFileSync(fileName + ".out", output, "utf8")
+   fs.writeFileSync(root + "\\" + fileName + ".out", output, "utf8")
    console.log(`Patched ${patches} internet check(s) in ${fileName}`)
 
    processed.push(fileName);
 }
 
-const playbooks = globSync("**/*.s")
+const playbooks = globSync("**/*.s", {cwd: `${root}`})
 for (const element of playbooks) {
     processFile(element)
 }
-fs.writeFileSync("_psaPatcher.json", JSON.stringify(processed, null, 4), "utf-8")
+fs.writeFileSync(`${root}\\_psaPatcher.json`, JSON.stringify(processed, null, 4), "utf-8")
